@@ -17,6 +17,18 @@
         android:theme="@style/Theme.PayOnApplication"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Successful_Transfer"
+            android:exported="false" />
+        <activity
+            android:name=".Transfer"
+            android:exported="false" />
+        <activity
+            android:name=".Successful_Withdraw"
+            android:exported="false" />
+        <activity
+            android:name=".Withdraw"
+            android:exported="false" />
+        <activity
             android:name=".Opreation_Failed"
             android:exported="false" />
         <activity
