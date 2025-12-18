@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Account"
+    android:background="#EBF4FF">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"> <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jo"
+            android:textSize="40sp"
+            android:fontFamily="@font/outfit_semibold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="60dp"/>
+
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01xxxxxxxxx"
+            android:textSize="24sp"
+            android:fontFamily="@font/outfit_semibold"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#6B6B6B"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_marginTop="50dp"
+            android:paddingBottom="30dp">
+
+            <TextView
+                android:id="@+id/tev1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/outfit_semibold"
+                android:text="Personal Information"
+                android:textSize="20sp"
+                android:textColor="#6B6B6B"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/tev2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/outfit_semibold"
+                android:text="Cards management"
+                android:textSize="20sp"
+                android:textColor="#6B6B6B"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tev1"/>
+
+            <TextView
+                android:id="@+id/tev3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/outfit_semibold"
+                android:text="Privacy &amp; Security"
+                android:textSize="20sp"
+                android:textColor="#6B6B6B"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tev2"/>
+
+            <TextView
+                android:id="@+id/tev4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/outfit_semibold"
+                android:text="Support"
+                android:textSize="20sp"
+                android:textColor="#6B6B6B"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tev3"/>
+
+            <ImageView
+                android:id="@+id/im1"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="41dp"
+                android:src="@drawable/infofill"
+                app:layout_constraintEnd_toStartOf="@+id/tev1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/im2"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="42dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/card"
+                app:layout_constraintEnd_toStartOf="@+id/tev2"
+                app:layout_constraintTop_toBottomOf="@+id/im1" />
+
+            <ImageView
+                android:id="@+id/im3"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="44dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/securityshield"
+                app:layout_constraintEnd_toStartOf="@+id/tev3"
+                app:layout_constraintTop_toBottomOf="@+id/im2" />
+
+            <ImageView
+                android:id="@+id/im4"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="44dp"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/support"
+                app:layout_constraintEnd_toStartOf="@+id/tev3"
+                app:layout_constraintTop_toBottomOf="@+id/im3" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/materialButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="320dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="#FFFFFF"
+                android:fontFamily="@font/outfit_semibold"
+                android:text="Referral code"
+                android:textColor="#447AE3"
+                android:textSize="17sp"
+                app:cornerRadius="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="#447AE3"
+                app:strokeWidth="2dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#F2F2F2"
+                android:fontFamily="@font/outfit_semibold"
+                android:text="Back to home"
+                android:textColor="#7C7C7C"
+                android:textSize="20sp"
+                app:cornerRadius="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialButton" />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu" />
+
+</RelativeLayout>
