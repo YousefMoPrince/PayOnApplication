@@ -4,16 +4,21 @@ import com.megabyte.payonapplication.DTO.AccountRequest;
 import com.megabyte.payonapplication.DTO.AccountResponse;
 import com.megabyte.payonapplication.DTO.AdminLoginRequest;
 import com.megabyte.payonapplication.DTO.AdminLoginResponse;
+import com.megabyte.payonapplication.DTO.ContactRequest;
+import com.megabyte.payonapplication.DTO.ContactResponse;
 import com.megabyte.payonapplication.DTO.GeneralApiResponse;
 import com.megabyte.payonapplication.DTO.LoginRequest;
 import com.megabyte.payonapplication.DTO.LoginResponse;
 import com.megabyte.payonapplication.DTO.RegisterRequest;
 import com.megabyte.payonapplication.DTO.RegisterResponse;
+import com.megabyte.payonapplication.DTO.Status;
 import com.megabyte.payonapplication.DTO.TransactionRequest;
 import com.megabyte.payonapplication.DTO.TransactionResponse;
 import com.megabyte.payonapplication.DTO.TransactionStatusResponse;
 import com.megabyte.payonapplication.DTO.WalletRequest;
 import com.megabyte.payonapplication.DTO.WalletResponse;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -51,6 +56,8 @@ public interface ApiService {
 
     @GET("api/wallets/wallet")
     Call<GeneralApiResponse<WalletResponse>> getWallet(@Query("userId") Long userId);
+    @POST("api/LogReg/sync-contacts")
+    Call<GeneralApiResponse<List<ContactResponse>>> syncContacts(@Body ContactRequest req);
 
 
     @POST("api/transactions/deposit")
@@ -66,9 +73,9 @@ public interface ApiService {
 
 
     @GET("api/transactions/{transactionId}/withdrawstatus")
-    Call<GeneralApiResponse<TransactionStatusResponse>> withdrawStatus(@Path("transactionId") String transactionId);
+    Call<GeneralApiResponse<TransactionStatusResponse>> withdrawStatus(@Path ("transactionId") String transactionId, @Body Status status);
 
 
     @GET("api/transactions/{transactionId}/transferstatus")
-    Call<GeneralApiResponse<TransactionStatusResponse>> transferStatus(@Path("transactionId") String transactionId);
+    Call<GeneralApiResponse<TransactionStatusResponse>> transferStatus(@Path("transactionId") String transactionId, @Body Status status);
 }

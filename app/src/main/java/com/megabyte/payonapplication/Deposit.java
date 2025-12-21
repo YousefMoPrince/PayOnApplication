@@ -3,7 +3,9 @@ package com.megabyte.payonapplication;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +30,8 @@ public class Deposit extends AppCompatActivity {
     private EditText etAmount, etPassword;
     private TextView accountNumber, balance;
     private MaterialButton btnConfirm;
+    private ImageView visibility;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +44,14 @@ public class Deposit extends AppCompatActivity {
         accountNumber = findViewById(R.id.account_number);
         balance = findViewById(R.id.balance);
         btnConfirm = findViewById(R.id.btn_confirm);
-
+        visibility = findViewById(R.id.visibility);
         loadUserData();
+        visibility.setOnClickListener(view -> {
+            visibility.setImageResource(R.drawable.visibility);
+            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        });
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-
         btnConfirm.setOnClickListener(view -> {
-            // التصحيح 1: لازم تقرأ الـ amount هنا جوه الـ click عشان ياخد اللي اتكتب فعلاً
             String amountStr = etAmount.getText().toString();
             String passStr = etPassword.getText().toString();
 
@@ -60,7 +66,6 @@ public class Deposit extends AppCompatActivity {
                     Toast.makeText(Deposit.this, "Please enter a valid password", Toast.LENGTH_SHORT).show();
                 } else {
                     ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                    // التصحيح 2: بعتنا الـ amount والـ description "Deposit"
                     TransactionRequest transactionRequest = new TransactionRequest(Long.parseLong(prefs.getString("USER_ID", "0")), null, 5L, amount, "Deposit");
 
                     apiService.deposit(transactionRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<TransactionResponse>>() {
@@ -71,7 +76,6 @@ public class Deposit extends AppCompatActivity {
                                 String transactionId = transactionData.getTransaction_id().toString();
                                 String amountRes = transactionData.getAmount().toString();
 
-                                // التصحيح 3: تحديث الرصيد من الـ Wallet API بعد الإيداع مباشرة
                                 apiService.getWallet(Long.parseLong(prefs.getString("USER_ID", "0"))).enqueue(new retrofit2.Callback<GeneralApiResponse<WalletResponse>>() {
                                     @Override
                                     public void onResponse(Call<GeneralApiResponse<WalletResponse>> call, Response<GeneralApiResponse<WalletResponse>> response) {
@@ -83,7 +87,6 @@ public class Deposit extends AppCompatActivity {
                                             editor.putString("BALANCE", updatedBalance);
                                             editor.apply();
 
-                                            // الانتقال لصفحة النجاح
                                             Intent intent = new Intent(Deposit.this, Successful_Deposit.class);
                                             intent.putExtra("TransactionId", transactionId);
                                             intent.putExtra("Account", accountNumber.getText().toString());
@@ -99,7 +102,6 @@ public class Deposit extends AppCompatActivity {
                                     }
                                 });
                             } else {
-                                // لو السيرفر رجع خطأ (زي رصيد غير كافي أو غيره)
                                 Intent intent = new Intent(Deposit.this, Opreation_Failed.class);
                                 intent.putExtra("ERROR_MSG", "Server Error: " + response.code());
                                 startActivity(intent);

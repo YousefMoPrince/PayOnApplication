@@ -72,6 +72,13 @@ public class MainActivity extends AppCompatActivity {
             isHidden = !isHidden;
             updateDisplay();
         });
+        withdraw.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, Withdraw.class);
+            intent.putExtra("source", currentSource);
+            startActivity(intent);
+        });
+
+
         deposit.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, Deposit.class);
             intent.putExtra("source", currentSource);

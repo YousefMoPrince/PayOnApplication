@@ -1,7 +1,7 @@
 package com.megabyte.payonapplication;
 
 public class APIurl {
-    public static final String BASE_URL = "http://192.168.1.5:9090/";
+    public static final String BASE_URL = "http://10.78.220.109:9090/";
     public static final String LOGIN_URL = BASE_URL + "api/LogReg/Login";
     public static final String REGISTER_URL = BASE_URL + "api/LogReg/register";
     public static final String ADMIN_LOGIN_URL = BASE_URL + "api/admins/Adlogin";
