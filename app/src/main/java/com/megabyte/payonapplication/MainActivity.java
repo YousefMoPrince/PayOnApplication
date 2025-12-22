@@ -13,6 +13,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.megabyte.payonapplication.DTO.GeneralApiResponse;
+import com.megabyte.payonapplication.DTO.WalletResponse;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initViews();
-        loadUserData();
         updateDisplay();
         setupClickListeners();
         applyWindowInsets();
+        onResume();
     }
 
     private void initViews() {
@@ -52,19 +57,35 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void loadUserData() {
-        Intent intent = getIntent();
-        currentSource = intent.getStringExtra("source");
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String userId = prefs.getString("USER_ID", "0");
 
-        if ("ActivitySignUp".equals(currentSource)) {
-            realBalance = prefs.getString("BALANCE", "0.00");
-            realAccountNumber = prefs.getString("ACCOUNT_NUMBER", "000000000000");
-            user.setText(prefs.getString("USERNAME", "User"));
-        } else {
-            realBalance = prefs.getString("BALANCELOGGED", "0.00");
-            realAccountNumber = prefs.getString("ACCOUNT_NUMBERLOGGED", "000000000000");
-            user.setText(prefs.getString("USERNAMELOGGED", "User"));
-        }
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        apiService.getWallet(Long.parseLong(userId)).enqueue(new retrofit2.Callback<GeneralApiResponse<WalletResponse>>() {
+            @Override
+            public void onResponse(Call<GeneralApiResponse<WalletResponse>> call, Response<GeneralApiResponse<WalletResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String latestBalance = response.body().getData().getBalance().toString();
+
+                    balance.setText("E£ " + latestBalance);
+                    account_number.setText(prefs.getString("ACCOUNT_NUMBERLOGGED", "000000000000"));
+                    account_number.setText(prefs.getString("ACCOUNT_NUMBER", "000000000000"));
+
+
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("BALANCELOGGED", latestBalance);
+                    editor.putString("BALANCE", latestBalance);
+                    editor.apply();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GeneralApiResponse<WalletResponse>> call, Throwable t) {
+                balance.setText("E£ " + prefs.getString("BALANCELOGGED", "0.00"));
+                account_number.setText(prefs.getString("ACCOUNT_NUMBERLOGGED", "00000000"));
+                account_number.setText(prefs.getString("ACCOUNT_NUMBER", "000000000000"));
+            }
+        });
     }
 
     private void setupClickListeners() {
@@ -132,4 +153,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserData();
+    }
+
 }
