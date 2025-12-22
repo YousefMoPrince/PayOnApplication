@@ -23,6 +23,7 @@ import com.megabyte.payonapplication.DTO.Status;
 import com.megabyte.payonapplication.DTO.TransactionRequest;
 import com.megabyte.payonapplication.DTO.TransactionResponse;
 import com.megabyte.payonapplication.DTO.TransactionStatusResponse;
+import com.megabyte.payonapplication.DTO.WalletResponse;
 
 import java.math.BigDecimal;
 
@@ -83,15 +84,35 @@ private TextView account_number;
                                     @Override
                                     public void onResponse(Call<GeneralApiResponse<TransactionStatusResponse>> call, Response<GeneralApiResponse<TransactionStatusResponse>> response) {
                                         if (response.isSuccessful() && response.body() != null) {
-                                            Intent intent = new Intent(Withdraw.this, Successful_Withdraw.class);
-                                            intent.putExtra("TransactionId", transactionId);
-                                            intent.putExtra("Account", account_number.getText().toString());
-                                            intent.putExtra("Amount", et_amount.getText().toString());
-                                            startActivity(intent);
-                                            finish();
+                                            apiService.getWallet(Long.parseLong(prefs.getString("USER_ID", "0"))).enqueue(new retrofit2.Callback<GeneralApiResponse<WalletResponse>>() {
+                                                @Override
+                                                public void onResponse(Call<GeneralApiResponse<WalletResponse>> call, Response<GeneralApiResponse<WalletResponse>> response) {
+                                                    if (response.isSuccessful() && response.body() != null) {
+                                                        String updatedBalance = response.body().getData().getBalance().toString();
+
+                                                        SharedPreferences.Editor editor = prefs.edit();
+                                                        editor.putString("BALANCELOGGED", updatedBalance);
+                                                        editor.putString("BALANCE", updatedBalance);
+                                                        editor.apply();
+
+                                                        Intent intent = new Intent(Withdraw.this, Successful_Withdraw.class);
+                                                        intent.putExtra("TransactionId", transactionId);
+                                                        intent.putExtra("Account", account_number.getText().toString());
+                                                        intent.putExtra("Amount", amount);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<GeneralApiResponse<WalletResponse>> call, Throwable t) {
+                                                    Toast.makeText(Withdraw.this, "Balance update failed", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
                                         } else {
                                             Intent intent = new Intent(Withdraw.this, Opreation_Failed.class);
                                             intent.putExtra("ERROR_MSG", "Server Error: " + response.code());
+                                            intent.putExtra("source", "ActivityWithdraw");
                                             startActivity(intent);
                                         }
 

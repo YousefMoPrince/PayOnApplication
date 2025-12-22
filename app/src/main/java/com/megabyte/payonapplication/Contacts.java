@@ -53,7 +53,21 @@ public class Contacts extends AppCompatActivity {
         lvContacts = findViewById(R.id.lv_contacts);
         etSearch = findViewById(R.id.et_search);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+        lvContacts.setOnItemClickListener((parent, view, position, id) -> {
+            if (registeredUsers != null && !registeredUsers.isEmpty()) {
+                ContactResponse selectedUser = registeredUsers.get(position);
 
+                Intent intent = new Intent(Contacts.this, Transfer.class);
+                intent.putExtra("TARGET_USER_ID", selectedUser.getUserId());
+                intent.putExtra("TARGET_PHONE", selectedUser.getPhone());
+
+                String nameOnPhone = phoneToNameMap.get(selectedUser.getPhone());
+                intent.putExtra("TARGET_NAME", nameOnPhone);
+
+                startActivity(intent);
+                finish();
+            }
+        });
         setupNavigation();
         checkPermissionAndSync();
 
