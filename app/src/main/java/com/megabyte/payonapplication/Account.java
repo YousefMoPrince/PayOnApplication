@@ -12,10 +12,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 
 public class Account extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private TextView username,phone;
+    private MaterialButton logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,12 @@ public class Account extends AppCompatActivity {
         setContentView(R.layout.activity_account);
         username = findViewById(R.id.username);
         phone = findViewById(R.id.phone);
+        logout = findViewById(R.id.logout);
+        logout.setOnClickListener(v -> {
+            Intent intent = new Intent(Account.this, SignIn.class);
+            startActivity(intent);
+            finish();
+                });
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.navigation_account);
         bottomNavigationView.setOnItemSelectedListener(item -> {

@@ -19,11 +19,11 @@ import com.megabyte.payonapplication.DTO.WalletRequest;
 import com.megabyte.payonapplication.DTO.WalletResponse;
 
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -72,10 +72,10 @@ public interface ApiService {
     Call<GeneralApiResponse<TransactionResponse>> transfer(@Body TransactionRequest request);
 
 
-    @GET("api/transactions/{transactionId}/withdrawstatus")
+    @PUT("api/transactions/{transactionId}/withdrawstatus")
     Call<GeneralApiResponse<TransactionStatusResponse>> withdrawStatus(@Path ("transactionId") String transactionId, @Body Status status);
 
 
-    @GET("api/transactions/{transactionId}/transferstatus")
+    @PUT("api/transactions/{transactionId}/transferstatus")
     Call<GeneralApiResponse<TransactionStatusResponse>> transferStatus(@Path("transactionId") String transactionId, @Body Status status);
 }

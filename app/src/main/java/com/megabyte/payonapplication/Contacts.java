@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,6 +24,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.megabyte.payonapplication.DTO.ContactRequest;
 import com.megabyte.payonapplication.DTO.ContactResponse;
 import com.megabyte.payonapplication.DTO.GeneralApiResponse;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,21 +55,20 @@ public class Contacts extends AppCompatActivity {
         lvContacts = findViewById(R.id.lv_contacts);
         etSearch = findViewById(R.id.et_search);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+
         lvContacts.setOnItemClickListener((parent, view, position, id) -> {
             if (registeredUsers != null && !registeredUsers.isEmpty()) {
                 ContactResponse selectedUser = registeredUsers.get(position);
-
                 Intent intent = new Intent(Contacts.this, Transfer.class);
                 intent.putExtra("TARGET_USER_ID", selectedUser.getUserId());
                 intent.putExtra("TARGET_PHONE", selectedUser.getPhone());
-
                 String nameOnPhone = phoneToNameMap.get(selectedUser.getPhone());
-                intent.putExtra("TARGET_NAME", nameOnPhone);
-
+                intent.putExtra("TARGET_NAME", nameOnPhone != null ? nameOnPhone : "PayOn User");
                 startActivity(intent);
                 finish();
             }
         });
+
         setupNavigation();
         checkPermissionAndSync();
 
@@ -100,8 +101,8 @@ public class Contacts extends AppCompatActivity {
                 ContactsContract.CommonDataKinds.Phone.NUMBER
         };
 
+        // المرحلة الأولى: جمع الأرقام من الهاتف وتنظيفها
         try (Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, null)) {
-
             if (cursor == null) {
                 Toast.makeText(this, "Could not fetch contacts.", Toast.LENGTH_SHORT).show();
                 return;
@@ -113,27 +114,31 @@ public class Contacts extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 String name = cursor.getString(nameColumnIndex);
                 String number = cursor.getString(numberColumnIndex);
-
                 if (number == null || number.isEmpty()) continue;
 
                 String cleanNumber = number.replaceAll("[\\s\\-\\(\\)\\+]", "");
 
-                if (cleanNumber.startsWith("20")) {
-                    cleanNumber = cleanNumber.substring(2);
+                // توحيد التنسيق ليكون 01xxxxxxxxx
+                if (cleanNumber.startsWith("201") && cleanNumber.length() == 12) {
+                    cleanNumber = "0" + cleanNumber.substring(2);
+                } else if (cleanNumber.startsWith("1") && cleanNumber.length() == 10) {
+                    cleanNumber = "0" + cleanNumber;
                 }
 
-                if (!numbersToSync.contains(cleanNumber)) {
-                    numbersToSync.add(cleanNumber);
-                    phoneToNameMap.put(cleanNumber, name);
+                if (cleanNumber.length() == 11 && cleanNumber.startsWith("01")) {
+                    if (!numbersToSync.contains(cleanNumber)) {
+                        numbersToSync.add(cleanNumber);
+                        phoneToNameMap.put(cleanNumber, name);
+                    }
                 }
             }
         } catch (Exception e) {
-            Toast.makeText(this, "Error reading contacts.", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+            Log.e("ContactsError", "Error reading contacts", e);
         }
 
         if (!numbersToSync.isEmpty()) {
-            syncWithBackend(numbersToSync);
+            List<String> limitedNumbers = numbersToSync.subList(0, Math.min(numbersToSync.size(), 100));
+            syncWithBackend(limitedNumbers);
         } else {
             registeredUsers.clear();
             showRegisteredUsers();
@@ -150,16 +155,16 @@ public class Contacts extends AppCompatActivity {
             public void onResponse(Call<GeneralApiResponse<List<ContactResponse>>> call, Response<GeneralApiResponse<List<ContactResponse>>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     registeredUsers = response.body().getData();
+                    showRegisteredUsers();
                 } else {
-                    Toast.makeText(Contacts.this, "Sync failed: " + response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Contacts.this, "Sync failed: Server Error", Toast.LENGTH_SHORT).show();
                 }
-                showRegisteredUsers();
             }
 
             @Override
             public void onFailure(Call<GeneralApiResponse<List<ContactResponse>>> call, Throwable t) {
-                Toast.makeText(Contacts.this, "Network error: Check connection", Toast.LENGTH_SHORT).show();
-                showRegisteredUsers();
+                Log.e("API_ERROR", "Reason: " + t.getMessage());
+                Toast.makeText(Contacts.this, "Network error: " + t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -171,7 +176,6 @@ public class Contacts extends AppCompatActivity {
         }
 
         displayList.clear();
-
         if (registeredUsers != null && !registeredUsers.isEmpty()) {
             for (ContactResponse user : registeredUsers) {
                 String nameOnPhone = phoneToNameMap.get(user.getPhone());
@@ -181,7 +185,6 @@ public class Contacts extends AppCompatActivity {
         } else {
             displayList.add("No contacts found on PayOn");
         }
-
         adapter.notifyDataSetChanged();
     }
 
@@ -190,16 +193,14 @@ public class Contacts extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.navigation_contacts) return true;
-
-            Intent intent;
             if (itemId == R.id.navigation_home) {
-                intent = new Intent(this, MainActivity.class);
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
             } else if (itemId == R.id.navigation_account) {
-                intent = new Intent(this, Account.class);
-            } else return false;
-
-            startActivity(intent);
-            return true;
+                startActivity(new Intent(this, Account.class));
+                return true;
+            }
+            return false;
         });
     }
 
@@ -209,7 +210,7 @@ public class Contacts extends AppCompatActivity {
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             fetchLocalContactsAndSync();
         } else {
-            Toast.makeText(this, "Permission to read contacts denied.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Permission denied.", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -50,9 +50,8 @@ private TextView account_number;
         balance = findViewById(R.id.balance);
         account_number = findViewById(R.id.account_number);
         getInfo();
-        String amount = et_amount.getText().toString();
-        BigDecimal amountDecimal = new BigDecimal(amount);
-        String balanceStr = balance.getText().toString();
+
+
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         visibility.setOnClickListener(view -> {
             visibility.setImageResource(R.drawable.visibility);
@@ -61,11 +60,11 @@ private TextView account_number;
         btn_confirm.setOnClickListener(view -> {
             if (et_amount.getText().toString().isEmpty() || et_password.getText().toString().isEmpty()) {
                 Toast.makeText(Withdraw.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
-                }else if (!validatePassword()){
+                }else if (!validatePassword()) {
                 Toast.makeText(Withdraw.this, "Incorrect password", Toast.LENGTH_SHORT).show();
-            } else if (amount.compareTo(balanceStr) >= 0) {
-                Toast.makeText(Withdraw.this, "Insufficient balance", Toast.LENGTH_SHORT).show();
-            } else {
+            }else {
+                String amount = et_amount.getText().toString();
+                BigDecimal amountDecimal = new BigDecimal(amount);
                 ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
                 TransactionRequest transactionRequest = new TransactionRequest(Long.parseLong(prefs.getString("USER_ID", "0")), null, 5L, amountDecimal, "Withdraw");
                 apiService.withdraw(transactionRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<TransactionResponse>>() {
@@ -167,7 +166,7 @@ private TextView account_number;
     }
     public boolean validatePassword(){
         String password = et_password.getText().toString();
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         Intent intent = getIntent();
         String currentSource = intent.getStringExtra("source");
         if ("ActivitySignUp".equals(currentSource)) {
@@ -181,19 +180,15 @@ private TextView account_number;
 
     }
     public void getInfo(){
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         Intent intent = getIntent();
        String currentSource = intent.getStringExtra("source");
         if ("ActivitySignUp".equals(currentSource)) {
-            String balance = sharedPreferences.getString("BALANCE", "0.00");
-            String account_number = sharedPreferences.getString("ACCOUNT_NUMBER", "000000000000");
-            this.balance.setText("E£ " + balance);
-            this.account_number.setText(account_number);
-        }else {
-            String balance = sharedPreferences.getString("BALANCELOGGED", "0.00");
-            String account_number = sharedPreferences.getString("ACCOUNT_NUMBERLOGGED", "000000000000");
-            this.balance.setText("E£ " + balance);
-            this.account_number.setText(account_number);
+            balance.setText(sharedPreferences.getString("BALANCE", "0.00"));
+            account_number.setText(sharedPreferences.getString("ACCOUNT_NUMBER", "000000000000"));
+        } else {
+            balance.setText(sharedPreferences.getString("BALANCELOGGED", "0.00"));
+            account_number.setText(sharedPreferences.getString("ACCOUNT_NUMBERLOGGED", "000000000000"));
         }
     }
 }

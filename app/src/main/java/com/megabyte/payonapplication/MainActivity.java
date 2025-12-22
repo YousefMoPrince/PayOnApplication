@@ -84,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("source", currentSource);
             startActivity(intent);
         });
+        transfer.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, Transfer.class);
+            intent.putExtra("source", currentSource);
+            startActivity(intent);
+                });
 
 
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
