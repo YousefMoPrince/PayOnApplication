@@ -45,7 +45,6 @@ public class SignIn extends AppCompatActivity {
         password = findViewById(R.id.password);
         visibility = findViewById(R.id.visibility);
         visibility.setOnClickListener(view -> {
-            isHidden = !isHidden;
             updateDisplay();
         });
         signUpText.setOnClickListener(view -> {
@@ -177,11 +176,15 @@ public class SignIn extends AppCompatActivity {
     }
     public void updateDisplay() {
         if (isHidden) {
-            password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            visibility.setImageResource(R.drawable.visibility_off);
-        } else {
-            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             visibility.setImageResource(R.drawable.visibility);
+            isHidden = false;
+        } else {
+            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility_off);
+            isHidden = true;
         }
+
+        password.setSelection(password.getText().length());
     }
 }

@@ -49,7 +49,6 @@ public class Deposit extends AppCompatActivity {
         visibility = findViewById(R.id.visibility);
         loadUserData();
         visibility.setOnClickListener(view -> {
-            isHidden = !isHidden;
             updateDisplay();
         });
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
@@ -152,12 +151,16 @@ public class Deposit extends AppCompatActivity {
         return enteredPassword.equals(savedPassword);
     }
     public void updateDisplay() {
-        if (isHidden){
-            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            visibility.setImageResource(R.drawable.visibility_off);
-        }else {
-            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        if (isHidden) {
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             visibility.setImageResource(R.drawable.visibility);
+            isHidden = false;
+        } else {
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility_off);
+            isHidden = true;
         }
+
+        etPassword.setSelection(etPassword.getText().length());
     }
 }

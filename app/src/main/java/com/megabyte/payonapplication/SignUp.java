@@ -38,7 +38,7 @@ public class SignUp extends AppCompatActivity {
     private EditText email;
     private EditText phoneNumber;
     private EditText verifyPassword;
-    private TextView signInText ;
+    private TextView signInText;
     private ImageView visibility;
     private ImageView visibility2;
     private boolean isHidden = true;
@@ -59,11 +59,9 @@ public class SignUp extends AppCompatActivity {
         visibility = findViewById(R.id.visibility);
         visibility2 = findViewById(R.id.visibility2);
         visibility.setOnClickListener(view -> {
-            isHidden = !isHidden;
             updateDisplay();
         });
         visibility2.setOnClickListener(view -> {
-            isHidden = !isHidden;
             updateDisplay2();
         });
         signInText.setOnClickListener(view -> {
@@ -135,9 +133,7 @@ public class SignUp extends AppCompatActivity {
                             System.out.println(new Gson().toJson(response.body()));
 
 
-                            AccountRequest accountRequest = new AccountRequest("masr bank",account_number,account_holder_name,Long.parseLong(userId),5L);
-
-
+                            AccountRequest accountRequest = new AccountRequest("masr bank", account_number, account_holder_name, Long.parseLong(userId), 5L);
 
 
                             apiService.accountRegister(accountRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<AccountResponse>>() {
@@ -164,7 +160,7 @@ public class SignUp extends AppCompatActivity {
                                         System.out.println("Account Register Success: " + accountData.getAccountNumber());
                                         Toast.makeText(SignUp.this, "Account Register Success", Toast.LENGTH_SHORT).show();
 
-                                        WalletRequest walletRequest = new WalletRequest(Long.parseLong(userId),5L,new BigDecimal("0"));
+                                        WalletRequest walletRequest = new WalletRequest(Long.parseLong(userId), 5L, new BigDecimal("0"));
                                         System.out.println(new Gson().toJson(walletRequest));
 
                                         apiService.createWallet(walletRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<WalletResponse>>() {
@@ -201,7 +197,7 @@ public class SignUp extends AppCompatActivity {
                                             @Override
                                             public void onFailure(Call<GeneralApiResponse<WalletResponse>> call, Throwable t) {
                                                 System.out.println("Wallet Create Failed: " + t.getMessage());
-                                                Toast.makeText(SignUp.this, "Wallet Create Failed: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(SignUp.this, "Wallet Create Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                                             }
 
                                         });
@@ -212,14 +208,15 @@ public class SignUp extends AppCompatActivity {
                                         Toast.makeText(SignUp.this, "Account Register Failed: " + response.code(), Toast.LENGTH_SHORT).show();
                                     }
                                 }
+
                                 @Override
                                 public void onFailure(Call<GeneralApiResponse<AccountResponse>> call, Throwable t) {
                                     System.out.println("Error: " + t.getMessage());
-                                    Toast.makeText(SignUp.this, "Account Register Failed: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignUp.this, "Account Register Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
 
-                        }else {
+                        } else {
                             System.out.println("Register Failed: " + response.code());
                             Toast.makeText(SignUp.this, "Register Failed: " + response.code(), Toast.LENGTH_SHORT).show();
                         }
@@ -228,7 +225,7 @@ public class SignUp extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<GeneralApiResponse<RegisterResponse>> call, Throwable t) {
                         System.out.println("Error: " + t.getMessage());
-                        Toast.makeText(SignUp.this, "Register Failed: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUp.this, "Register Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -243,22 +240,32 @@ public class SignUp extends AppCompatActivity {
             return insets;
         });
     }
+
     public void updateDisplay() {
         if (isHidden) {
-            password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            visibility.setImageResource(R.drawable.visibility_off);
-        } else {
-            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             visibility.setImageResource(R.drawable.visibility);
+            isHidden = false;
+        } else {
+            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility_off);
+            isHidden = true;
         }
+
+        password.setSelection(password.getText().length());
     }
+
     public void updateDisplay2() {
         if (isHidden) {
-            password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            visibility2.setImageResource(R.drawable.visibility_off);
-        } else {
-            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            verifyPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             visibility2.setImageResource(R.drawable.visibility);
+            isHidden = false;
+        } else {
+            verifyPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility2.setImageResource(R.drawable.visibility_off);
+            isHidden = true;
         }
+
+        verifyPassword.setSelection(verifyPassword.getText().length());
     }
 }

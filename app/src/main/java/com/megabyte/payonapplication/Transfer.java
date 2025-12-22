@@ -61,7 +61,6 @@ public class Transfer extends AppCompatActivity {
 
 
         visibility.setOnClickListener(view -> {
-            isHidden = !isHidden;
             updateDisplay();
         });
 
@@ -215,8 +214,15 @@ public class Transfer extends AppCompatActivity {
     }
     public void updateDisplay() {
         if (isHidden) {
-            et_password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            et_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility);
+            isHidden = false;
+        } else {
+            et_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             visibility.setImageResource(R.drawable.visibility_off);
+            isHidden = true;
         }
+
+        et_password.setSelection(et_password.getText().length());
     }
 }
