@@ -101,7 +101,6 @@ public class Contacts extends AppCompatActivity {
                 ContactsContract.CommonDataKinds.Phone.NUMBER
         };
 
-        // المرحلة الأولى: جمع الأرقام من الهاتف وتنظيفها
         try (Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, null, null, null)) {
             if (cursor == null) {
                 Toast.makeText(this, "Could not fetch contacts.", Toast.LENGTH_SHORT).show();
@@ -118,7 +117,6 @@ public class Contacts extends AppCompatActivity {
 
                 String cleanNumber = number.replaceAll("[\\s\\-\\(\\)\\+]", "");
 
-                // توحيد التنسيق ليكون 01xxxxxxxxx
                 if (cleanNumber.startsWith("201") && cleanNumber.length() == 12) {
                     cleanNumber = "0" + cleanNumber.substring(2);
                 } else if (cleanNumber.startsWith("1") && cleanNumber.length() == 10) {

@@ -3,8 +3,10 @@ package com.megabyte.payonapplication;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,8 @@ public class SignIn extends AppCompatActivity {
     private EditText useremail;
     private EditText password;
     private TextView signUpText ;
+    private ImageView visibility;
+    private boolean isHidden = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,11 @@ public class SignIn extends AppCompatActivity {
         signInButton = findViewById(R.id.signInButton);
         useremail = findViewById(R.id.useremail);
         password = findViewById(R.id.password);
+        visibility = findViewById(R.id.visibility);
+        visibility.setOnClickListener(view -> {
+            isHidden = !isHidden;
+            updateDisplay();
+        });
         signUpText.setOnClickListener(view -> {
             Intent intent = new Intent(SignIn.this, SignUp.class);
             startActivity(intent);
@@ -165,5 +174,14 @@ public class SignIn extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+    public void updateDisplay() {
+        if (isHidden) {
+            password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility_off);
+        } else {
+            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility);
+        }
     }
 }

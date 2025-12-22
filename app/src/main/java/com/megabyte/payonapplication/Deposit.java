@@ -31,6 +31,8 @@ public class Deposit extends AppCompatActivity {
     private TextView accountNumber, balance;
     private MaterialButton btnConfirm;
     private ImageView visibility;
+    private boolean isHidden = true;
+
 
 
     @Override
@@ -47,8 +49,8 @@ public class Deposit extends AppCompatActivity {
         visibility = findViewById(R.id.visibility);
         loadUserData();
         visibility.setOnClickListener(view -> {
-            visibility.setImageResource(R.drawable.visibility);
-            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            isHidden = !isHidden;
+            updateDisplay();
         });
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         btnConfirm.setOnClickListener(view -> {
@@ -148,5 +150,14 @@ public class Deposit extends AppCompatActivity {
         String enteredPassword = etPassword.getText().toString();
         String savedPassword = "ActivitySignUp".equals(source) ? prefs.getString("PASSWORD", "") : prefs.getString("PASSWORDLOGGED", "");
         return enteredPassword.equals(savedPassword);
+    }
+    public void updateDisplay() {
+        if (isHidden){
+            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility_off);
+        }else {
+            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility);
+        }
     }
 }

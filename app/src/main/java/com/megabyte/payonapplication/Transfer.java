@@ -37,6 +37,8 @@ public class Transfer extends AppCompatActivity {
     private ImageView visibility;
     private TextView balance, account_number;
     private MaterialButton btn_confirm;
+    private boolean isHidden = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +59,12 @@ public class Transfer extends AppCompatActivity {
 
         getInfo();
 
-        // Password Visibility
+
         visibility.setOnClickListener(view -> {
-            visibility.setImageResource(R.drawable.visibility);
-            et_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            isHidden = !isHidden;
+            updateDisplay();
         });
 
-        // Open Contacts
         btn_open_contacts.setOnClickListener(view -> {
             Intent contactIntent = new Intent(Transfer.this, Contacts.class);
             startActivity(contactIntent);
@@ -81,7 +82,6 @@ public class Transfer extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
 
-        // Confirm Button Logic (Identical to Withdraw)
         btn_confirm.setOnClickListener(v -> {
             String amountStr = et_amount.getText().toString();
             String description = et_description.getText().toString();
@@ -115,7 +115,6 @@ public class Transfer extends AppCompatActivity {
                             builder.setMessage("Do you want to confirm this transfer?");
                             builder.setPositiveButton("Confirm", (dialog, which) -> {
 
-                                // Step 2: Update Status
                                 apiService.transferStatus(transactionId, Status.COMPLETED).enqueue(new retrofit2.Callback<GeneralApiResponse<TransactionStatusResponse>>() {
                                     @Override
                                     public void onResponse(Call<GeneralApiResponse<TransactionStatusResponse>> call, Response<GeneralApiResponse<TransactionStatusResponse>> response) {
@@ -213,5 +212,11 @@ public class Transfer extends AppCompatActivity {
                 sharedPreferences.getString("PASSWORD", "") :
                 sharedPreferences.getString("PASSWORDLOGGED", "");
         return password.equals(storedPassword);
+    }
+    public void updateDisplay() {
+        if (isHidden) {
+            et_password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility_off);
+        }
     }
 }

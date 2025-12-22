@@ -3,8 +3,10 @@ package com.megabyte.payonapplication;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,9 @@ public class SignUp extends AppCompatActivity {
     private EditText phoneNumber;
     private EditText verifyPassword;
     private TextView signInText ;
+    private ImageView visibility;
+    private ImageView visibility2;
+    private boolean isHidden = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,16 @@ public class SignUp extends AppCompatActivity {
         phoneNumber = findViewById(R.id.phoneReg);
         verifyPassword = findViewById(R.id.verifyPasswordReg);
         signUpButton = findViewById(R.id.signUpButton);
+        visibility = findViewById(R.id.visibility);
+        visibility2 = findViewById(R.id.visibility2);
+        visibility.setOnClickListener(view -> {
+            isHidden = !isHidden;
+            updateDisplay();
+        });
+        visibility2.setOnClickListener(view -> {
+            isHidden = !isHidden;
+            updateDisplay2();
+        });
         signInText.setOnClickListener(view -> {
             Intent intent = new Intent(SignUp.this, SignIn.class);
             startActivity(intent);
@@ -227,5 +242,23 @@ public class SignUp extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+    public void updateDisplay() {
+        if (isHidden) {
+            password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility_off);
+        } else {
+            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility);
+        }
+    }
+    public void updateDisplay2() {
+        if (isHidden) {
+            password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility2.setImageResource(R.drawable.visibility_off);
+        } else {
+            password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            visibility2.setImageResource(R.drawable.visibility);
+        }
     }
 }

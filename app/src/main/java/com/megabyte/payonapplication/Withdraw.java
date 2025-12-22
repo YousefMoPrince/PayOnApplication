@@ -37,6 +37,7 @@ private ImageView visibility;
 private MaterialButton btn_confirm;
 private TextView balance;
 private TextView account_number;
+private boolean isHidden = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +55,8 @@ private TextView account_number;
 
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         visibility.setOnClickListener(view -> {
-            visibility.setImageResource(R.drawable.visibility);
-            et_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            isHidden = !isHidden;
+            updateDisplay();
         });
         btn_confirm.setOnClickListener(view -> {
             if (et_amount.getText().toString().isEmpty() || et_password.getText().toString().isEmpty()) {
@@ -189,6 +190,14 @@ private TextView account_number;
         } else {
             balance.setText(sharedPreferences.getString("BALANCELOGGED", "0.00"));
             account_number.setText(sharedPreferences.getString("ACCOUNT_NUMBERLOGGED", "000000000000"));
+        }
+    }public void updateDisplay() {
+        if (isHidden) {
+            et_password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility_off);
+        }else {
+            et_password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            visibility.setImageResource(R.drawable.visibility);
         }
     }
 }
