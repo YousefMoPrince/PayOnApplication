@@ -25,11 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView user, balance, account_number;
     private ImageView visibility, transfer, withdraw, deposit;
 
-
     private boolean isHidden = true;
-    private String realBalance = "";
+    private String realBalance = "0.00";
     private String realAccountNumber = "";
-    private String currentSource = "";
+    private String currentSource = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +37,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initViews();
-        updateDisplay();
         setupClickListeners();
         applyWindowInsets();
-        onResume();
+
+        loadUserData();
     }
-    // Initialize views
+
     private void initViews() {
         user = findViewById(R.id.username);
         balance = findViewById(R.id.balance);
@@ -55,68 +54,87 @@ public class MainActivity extends AppCompatActivity {
         transfer = findViewById(R.id.transfer_image);
     }
 
-
     private void loadUserData() {
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        String userId = prefs.getString("USER_ID", "0");
-        //get wallet data
+        String source = getIntent().getStringExtra("source");
+
+        String userId;
+        String username;
+    //load data from phone storage
+        if (source != null && source.equals("ActivitySignIn")) {
+            userId = prefs.getString("USER_ID", "0");
+            username = prefs.getString("USERNAMELOGGED", "User");
+            realAccountNumber = prefs.getString("ACCOUNT_NUMBERLOGGED", "000000000000");
+            realBalance = prefs.getString("BALANCELOGGED", "0.00");
+            currentSource = "ActivitySignIn";
+        } else if (source != null && source.equals("ActivitySignUp")) {
+            // تصحيح else لتصبح else if
+            userId = prefs.getString("USER_ID", "0");
+            username = prefs.getString("USERNAME", "User");
+            realAccountNumber = prefs.getString("ACCOUNT_NUMBER", "000000000000");
+            realBalance = prefs.getString("BALANCE", "0.00");
+            currentSource = "ActivitySignUp";
+        } else {
+            userId = prefs.getString("USER_ID", "0");
+            username = prefs.getString("USERNAMELOGGED", "User");
+            realAccountNumber = prefs.getString("ACCOUNT_NUMBERLOGGED", "000000000000");
+            realBalance = prefs.getString("BALANCELOGGED", "0.00");
+        }
+
+        user.setText(username);
+        updateDisplay();
+
+        // تحديث الرصيد من السيرفر
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         apiService.getWallet(Long.parseLong(userId)).enqueue(new retrofit2.Callback<GeneralApiResponse<WalletResponse>>() {
             @Override
             public void onResponse(Call<GeneralApiResponse<WalletResponse>> call, Response<GeneralApiResponse<WalletResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    String latestBalance = response.body().getData().getBalance().toString();
-
-                    balance.setText("E£ " + latestBalance);
-                    account_number.setText(prefs.getString("ACCOUNT_NUMBERLOGGED", "000000000000"));
-                    account_number.setText(prefs.getString("ACCOUNT_NUMBER", "000000000000"));
-
+                    realBalance = response.body().getData().getBalance().toString();
 
                     SharedPreferences.Editor editor = prefs.edit();
-                    editor.putString("BALANCELOGGED", latestBalance);
-                    editor.putString("BALANCE", latestBalance);
+                    editor.putString("BALANCELOGGED", realBalance);
+                    editor.putString("BALANCE", realBalance);
                     editor.apply();
+
+                    updateDisplay();
                 }
             }
 
             @Override
             public void onFailure(Call<GeneralApiResponse<WalletResponse>> call, Throwable t) {
-                balance.setText("E£ " + prefs.getString("BALANCELOGGED", "0.00"));
-                account_number.setText(prefs.getString("ACCOUNT_NUMBERLOGGED", "00000000"));
-                account_number.setText(prefs.getString("ACCOUNT_NUMBER", "000000000000"));
+                updateDisplay();
             }
         });
     }
-
+    //on click functions
     private void setupClickListeners() {
         visibility.setOnClickListener(v -> {
             isHidden = !isHidden;
             updateDisplay();
         });
+
         withdraw.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, Withdraw.class);
             intent.putExtra("source", currentSource);
             startActivity(intent);
         });
 
-
         deposit.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, Deposit.class);
             intent.putExtra("source", currentSource);
             startActivity(intent);
         });
+
         transfer.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, Transfer.class);
             intent.putExtra("source", currentSource);
             startActivity(intent);
-                });
-
-
+        });
+        //set bottom navigation
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
-
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-
             if (itemId == R.id.navigation_home) {
                 return true;
             } else if (itemId == R.id.navigation_contacts) {
@@ -153,10 +171,4 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadUserData();
-    }
-
 }
