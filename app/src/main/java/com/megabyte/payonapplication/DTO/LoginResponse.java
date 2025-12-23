@@ -6,7 +6,7 @@ public class LoginResponse {
     private String username;
     private String phone;
     private String password;
-    private String token;
+
     public String getUserId() {
         return userId; }
     public String getUsername() {
@@ -15,7 +15,6 @@ public class LoginResponse {
         return phone; }
     public String getPassword() {
         return password; }
-    public String getToken() {
-        return token; }
+
 
 }

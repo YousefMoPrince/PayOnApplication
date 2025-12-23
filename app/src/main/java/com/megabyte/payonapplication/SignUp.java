@@ -79,6 +79,7 @@ public class SignUp extends AppCompatActivity {
             } else if (!email.getText().toString().contains("@")) {
                 Toast.makeText(SignUp.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
             } else {
+                //make register request
                 String account_number = AccountUtils.generateAccountNumber();
                 ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
                 RegisterRequest registerRequest = new RegisterRequest(
@@ -91,14 +92,14 @@ public class SignUp extends AppCompatActivity {
 
                 System.out.println(new Gson().toJson(registerRequest));
 
-
+                //enqueue the request
                 apiService.register(registerRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<RegisterResponse>>() {
 
                     @Override
                     public void onResponse(Call<GeneralApiResponse<RegisterResponse>> call, Response<GeneralApiResponse<RegisterResponse>> response) {
                         if (response.isSuccessful() && response.body() != null) {
 
-
+                            //handle response data
                             RegisterResponse registerData = response.body().getData();
 
                             if (registerData == null || response.body().getMessage().contains("already exists")) {
@@ -132,7 +133,7 @@ public class SignUp extends AppCompatActivity {
                             Toast.makeText(SignUp.this, "Register Success", Toast.LENGTH_SHORT).show();
                             System.out.println(new Gson().toJson(response.body()));
 
-
+                            //make account register request
                             AccountRequest accountRequest = new AccountRequest("masr bank", account_number, account_holder_name, Long.parseLong(userId), 5L);
 
 
@@ -147,7 +148,7 @@ public class SignUp extends AppCompatActivity {
                                             Toast.makeText(SignUp.this, "Account Registration failed", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
-
+                                        //handle account response data
                                         String accountNumber = accountData.getAccountNumber();
                                         String bankName = accountData.getBankName();
                                         String accountHolder = accountData.getAccountHolder();
@@ -159,7 +160,7 @@ public class SignUp extends AppCompatActivity {
                                         editor.apply();
                                         System.out.println("Account Register Success: " + accountData.getAccountNumber());
                                         Toast.makeText(SignUp.this, "Account Register Success", Toast.LENGTH_SHORT).show();
-
+                                        //make wallet register request
                                         WalletRequest walletRequest = new WalletRequest(Long.parseLong(userId), 5L, new BigDecimal("0"));
                                         System.out.println(new Gson().toJson(walletRequest));
 
@@ -174,7 +175,7 @@ public class SignUp extends AppCompatActivity {
                                                         Toast.makeText(SignUp.this, "Wallet Create Failed", Toast.LENGTH_SHORT).show();
                                                         return;
                                                     }
-
+                                                    //handle wallet response data
                                                     String walletId = walletData.getWalletId().toString();
                                                     String balance = walletData.getBalance().toString();
                                                     SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);

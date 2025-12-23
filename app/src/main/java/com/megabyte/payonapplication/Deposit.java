@@ -53,6 +53,7 @@ public class Deposit extends AppCompatActivity {
         });
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         btnConfirm.setOnClickListener(view -> {
+            // Handle deposit logic here
             String amountStr = etAmount.getText().toString();
             String passStr = etPassword.getText().toString();
 
@@ -127,7 +128,7 @@ public class Deposit extends AppCompatActivity {
             return insets;
         });
     }
-
+        // Load user data from SharedPreferences
     private void loadUserData() {
         Intent intent = getIntent();
         String source = intent.getStringExtra("source");
@@ -141,7 +142,7 @@ public class Deposit extends AppCompatActivity {
             accountNumber.setText(prefs.getString("ACCOUNT_NUMBERLOGGED", "000000000000"));
         }
     }
-
+    // Validate password
     private boolean validPassword() {
         Intent intent = getIntent();
         String source = intent.getStringExtra("source");
@@ -150,6 +151,7 @@ public class Deposit extends AppCompatActivity {
         String savedPassword = "ActivitySignUp".equals(source) ? prefs.getString("PASSWORD", "") : prefs.getString("PASSWORDLOGGED", "");
         return enteredPassword.equals(savedPassword);
     }
+    // Update password visibility
     public void updateDisplay() {
         if (isHidden) {
             etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);

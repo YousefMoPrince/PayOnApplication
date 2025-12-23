@@ -92,6 +92,7 @@ public class SignIn extends AppCompatActivity {
                             System.out.println("Login Success: " + userId);
                             Toast.makeText(SignIn.this, "Login Success", Toast.LENGTH_SHORT).show();
                             ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+                            //get account data
                             apiService.findAccount(Long.parseLong(userId)).enqueue(new retrofit2.Callback<GeneralApiResponse<AccountResponse>>() {
                                 @Override
                                 public void onResponse(Call<GeneralApiResponse<AccountResponse>> call, Response<GeneralApiResponse<AccountResponse>> response) {
@@ -108,6 +109,7 @@ public class SignIn extends AppCompatActivity {
                                             editor.putString("ACCOUNT_NUMBERLOGGED", number);
                                             editor.apply();
                                             Toast.makeText(SignIn.this, "Found: " + holderName, Toast.LENGTH_SHORT).show();
+                                            //get wallet data
                                             apiService.getWallet(Long.parseLong(userId)).enqueue(new retrofit2.Callback<GeneralApiResponse<WalletResponse>>() {
                                                 @Override
                                                 public void onResponse(Call<GeneralApiResponse<WalletResponse>> call, Response<GeneralApiResponse<WalletResponse>> response) {
@@ -174,6 +176,7 @@ public class SignIn extends AppCompatActivity {
             return insets;
         });
     }
+    //show password
     public void updateDisplay() {
         if (isHidden) {
             password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);

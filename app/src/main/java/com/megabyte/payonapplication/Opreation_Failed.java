@@ -34,7 +34,7 @@ public class Opreation_Failed extends AppCompatActivity {
             finish();
         });
         btn_retry.setOnClickListener(view -> {
-
+        retry();
         });
 
 
@@ -55,5 +55,21 @@ public class Opreation_Failed extends AppCompatActivity {
         else if ("ActivityTransfer".equals(source)) {
         error_description.setText(errorMessage);}
 
+    }
+    public void retry() {
+        Intent intent = getIntent();
+        String source = intent.getStringExtra("source");
+        if ("ActivityWithdraw".equals(source)) {
+            Intent intent1 = new Intent(Opreation_Failed.this, Withdraw.class);
+            startActivity(intent1);
+            finish();}
+        else if ("ActivityDeposit".equals(source)) {
+            Intent intent1 = new Intent(Opreation_Failed.this, Deposit.class);
+            startActivity(intent1);
+            finish();}
+        else if ("ActivityTransfer".equals(source)) {
+            Intent intent1 = new Intent(Opreation_Failed.this, Transfer.class);
+            startActivity(intent1);
+            finish();}
     }
 }

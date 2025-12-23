@@ -71,7 +71,7 @@ public class Contacts extends AppCompatActivity {
 
         setupNavigation();
         checkPermissionAndSync();
-
+        //search for contacts
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -81,7 +81,7 @@ public class Contacts extends AppCompatActivity {
             @Override public void afterTextChanged(Editable s) {}
         });
     }
-
+    //check permission to load contacts
     private void checkPermissionAndSync() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -90,7 +90,7 @@ public class Contacts extends AppCompatActivity {
             fetchLocalContactsAndSync();
         }
     }
-
+    //load contacts from phone
     private void fetchLocalContactsAndSync() {
         List<String> numbersToSync = new ArrayList<>();
         phoneToNameMap.clear();
@@ -133,7 +133,7 @@ public class Contacts extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("ContactsError", "Error reading contacts", e);
         }
-
+        //only 100 contacts can be synced at a time
         if (!numbersToSync.isEmpty()) {
             List<String> limitedNumbers = numbersToSync.subList(0, Math.min(numbersToSync.size(), 100));
             syncWithBackend(limitedNumbers);
@@ -142,7 +142,7 @@ public class Contacts extends AppCompatActivity {
             showRegisteredUsers();
         }
     }
-
+        //sync contacts with backend
     private void syncWithBackend(List<String> numbers) {
         ContactRequest request = new ContactRequest();
         request.setContactNumbers(numbers);
@@ -166,7 +166,7 @@ public class Contacts extends AppCompatActivity {
             }
         });
     }
-
+        //display contacts
     private void showRegisteredUsers() {
         if (adapter == null) {
             adapter = new ArrayAdapter<>(this, R.layout.contact_item, R.id.tv_contact_name, displayList);
@@ -185,7 +185,7 @@ public class Contacts extends AppCompatActivity {
         }
         adapter.notifyDataSetChanged();
     }
-
+        //bottom navigation bar
     private void setupNavigation() {
         bottomNavigationView.setSelectedItemId(R.id.navigation_contacts);
         bottomNavigationView.setOnItemSelectedListener(item -> {

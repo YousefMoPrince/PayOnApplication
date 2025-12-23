@@ -84,7 +84,7 @@ public class Transfer extends AppCompatActivity {
         btn_confirm.setOnClickListener(v -> {
             String amountStr = et_amount.getText().toString();
             String description = et_description.getText().toString();
-
+            // Check fields
             if (et_recipient.getText().toString().isEmpty() || amountStr.isEmpty() || et_password.getText().toString().isEmpty()) {
                 Toast.makeText(Transfer.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
             } else if (!validatePassword()) {
@@ -101,7 +101,7 @@ public class Transfer extends AppCompatActivity {
                         amountDecimal,
                         description.isEmpty() ? "Transfer" : description
                 );
-
+                // Send transfer Request
                 apiService.transfer(transactionRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<TransactionResponse>>() {
                     @Override
                     public void onResponse(Call<GeneralApiResponse<TransactionResponse>> call, Response<GeneralApiResponse<TransactionResponse>> response) {
@@ -113,12 +113,12 @@ public class Transfer extends AppCompatActivity {
                             builder.setTitle("Transaction Confirmation");
                             builder.setMessage("Do you want to confirm this transfer?");
                             builder.setPositiveButton("Confirm", (dialog, which) -> {
-
+                                // Update status
                                 apiService.transferStatus(transactionId, Status.COMPLETED).enqueue(new retrofit2.Callback<GeneralApiResponse<TransactionStatusResponse>>() {
                                     @Override
                                     public void onResponse(Call<GeneralApiResponse<TransactionStatusResponse>> call, Response<GeneralApiResponse<TransactionStatusResponse>> response) {
                                         if (response.isSuccessful()) {
-                                            // Step 3: Refresh Wallet Balance
+                                            // Update balance
                                             apiService.getWallet(Long.parseLong(prefs.getString("USER_ID", "0"))).enqueue(new retrofit2.Callback<GeneralApiResponse<WalletResponse>>() {
                                                 @Override
                                                 public void onResponse(Call<GeneralApiResponse<WalletResponse>> call, Response<GeneralApiResponse<WalletResponse>> response) {
@@ -154,7 +154,7 @@ public class Transfer extends AppCompatActivity {
                                     }
                                 });
                             });
-
+                            // Cancelation
                             builder.setNegativeButton("Cancel", (dialog, which) -> {
                                 apiService.transferStatus(transactionId, Status.CANCELLED).enqueue(new retrofit2.Callback<GeneralApiResponse<TransactionStatusResponse>>() {
                                     @Override
@@ -185,7 +185,7 @@ public class Transfer extends AppCompatActivity {
             return insets;
         });
     }
-
+// Load user data from SharedPreferences
     public void getInfo() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         Intent intent = getIntent();
@@ -201,7 +201,7 @@ public class Transfer extends AppCompatActivity {
         balance.setText("E£ " + b);
         account_number.setText(acc);
     }
-
+// Validate password
     public boolean validatePassword() {
         String password = et_password.getText().toString();
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
@@ -212,6 +212,7 @@ public class Transfer extends AppCompatActivity {
                 sharedPreferences.getString("PASSWORDLOGGED", "");
         return password.equals(storedPassword);
     }
+    // Update password visibility
     public void updateDisplay() {
         if (isHidden) {
             et_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);

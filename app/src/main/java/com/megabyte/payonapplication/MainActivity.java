@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         applyWindowInsets();
         onResume();
     }
-
+    // Initialize views
     private void initViews() {
         user = findViewById(R.id.username);
         balance = findViewById(R.id.balance);
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadUserData() {
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         String userId = prefs.getString("USER_ID", "0");
-
+        //get wallet data
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         apiService.getWallet(Long.parseLong(userId)).enqueue(new retrofit2.Callback<GeneralApiResponse<WalletResponse>>() {
             @Override

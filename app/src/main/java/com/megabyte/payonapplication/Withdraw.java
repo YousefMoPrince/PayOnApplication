@@ -52,12 +52,12 @@ private boolean isHidden = true;
         account_number = findViewById(R.id.account_number);
         getInfo();
 
-
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         visibility.setOnClickListener(view -> {
             updateDisplay();
         });
         btn_confirm.setOnClickListener(view -> {
+            // Handle withdraw logic here
             if (et_amount.getText().toString().isEmpty() || et_password.getText().toString().isEmpty()) {
                 Toast.makeText(Withdraw.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
                 }else if (!validatePassword()) {
@@ -164,6 +164,7 @@ private boolean isHidden = true;
             return insets;
         });
     }
+    // Validate password
     public boolean validatePassword(){
         String password = et_password.getText().toString();
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
@@ -179,6 +180,7 @@ private boolean isHidden = true;
 
 
     }
+    // Load user data from SharedPreferences
     public void getInfo(){
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         Intent intent = getIntent();
@@ -190,7 +192,9 @@ private boolean isHidden = true;
             balance.setText(sharedPreferences.getString("BALANCELOGGED", "0.00"));
             account_number.setText(sharedPreferences.getString("ACCOUNT_NUMBERLOGGED", "000000000000"));
         }
-    }    public void updateDisplay() {
+    }
+    // Update password visibility
+    public void updateDisplay() {
         if (isHidden) {
             et_password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             visibility.setImageResource(R.drawable.visibility);
