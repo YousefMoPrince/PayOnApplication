@@ -57,12 +57,16 @@ private boolean isHidden = true;
             updateDisplay();
         });
         btn_confirm.setOnClickListener(view -> {
+            BigDecimal amountDec = new BigDecimal(et_amount.getText().toString());
+            BigDecimal balanceDec = new BigDecimal(balance.getText().toString().substring(2));
             // Handle withdraw logic here
             if (et_amount.getText().toString().isEmpty() || et_password.getText().toString().isEmpty()) {
                 Toast.makeText(Withdraw.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
                 }else if (!validatePassword()) {
                 Toast.makeText(Withdraw.this, "Incorrect password", Toast.LENGTH_SHORT).show();
-            }else {
+            } else if (amountDec.compareTo(balanceDec) >= 0) {
+                Toast.makeText(Withdraw.this, "Insufficient balance", Toast.LENGTH_SHORT).show();
+        }else {
                 String amount = et_amount.getText().toString();
                 BigDecimal amountDecimal = new BigDecimal(amount);
                 ApiService apiService = RetrofitClient.getClient().create(ApiService.class);

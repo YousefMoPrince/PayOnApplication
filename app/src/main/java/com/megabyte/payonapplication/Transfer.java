@@ -83,13 +83,17 @@ public class Transfer extends AppCompatActivity {
 
         btn_confirm.setOnClickListener(v -> {
             String amountStr = et_amount.getText().toString();
+            BigDecimal amountDec = new BigDecimal(et_amount.getText().toString());
+            BigDecimal balanceDec = new BigDecimal(balance.getText().toString().substring(2));
             String description = et_description.getText().toString();
             // Check fields
             if (et_recipient.getText().toString().isEmpty() || amountStr.isEmpty() || et_password.getText().toString().isEmpty()) {
                 Toast.makeText(Transfer.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
             } else if (!validatePassword()) {
                 Toast.makeText(Transfer.this, "Incorrect password", Toast.LENGTH_SHORT).show();
-            } else {
+            } else if (amountDec.compareTo(balanceDec) >= 0) {
+                Toast.makeText(Transfer.this, "Insufficient balance", Toast.LENGTH_SHORT).show();
+        } else {
                 BigDecimal amountDecimal = new BigDecimal(amountStr);
                 ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
 
