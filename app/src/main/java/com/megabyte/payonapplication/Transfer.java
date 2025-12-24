@@ -91,7 +91,7 @@ public class Transfer extends AppCompatActivity {
                 Toast.makeText(Transfer.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
             } else if (!validatePassword()) {
                 Toast.makeText(Transfer.this, "Incorrect password", Toast.LENGTH_SHORT).show();
-            } else if (amountDec.compareTo(balanceDec) >= 0) {
+            } else if (amountDec.compareTo(balanceDec) > 0) {
                 Toast.makeText(Transfer.this, "Insufficient balance", Toast.LENGTH_SHORT).show();
         } else {
                 BigDecimal amountDecimal = new BigDecimal(amountStr);

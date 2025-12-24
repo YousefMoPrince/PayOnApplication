@@ -64,7 +64,7 @@ private boolean isHidden = true;
                 Toast.makeText(Withdraw.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
                 }else if (!validatePassword()) {
                 Toast.makeText(Withdraw.this, "Incorrect password", Toast.LENGTH_SHORT).show();
-            } else if (amountDec.compareTo(balanceDec) >= 0) {
+            } else if (amountDec.compareTo(balanceDec) > 0) {
                 Toast.makeText(Withdraw.this, "Insufficient balance", Toast.LENGTH_SHORT).show();
         }else {
                 String amount = et_amount.getText().toString();
