@@ -134,7 +134,7 @@ public class SignUp extends AppCompatActivity {
                             System.out.println(new Gson().toJson(response.body()));
 
                             //make account register request
-                            AccountRequest accountRequest = new AccountRequest("masr bank", account_number, account_holder_name, Long.parseLong(userId), 5L);
+                            AccountRequest accountRequest = new AccountRequest("masr bank", account_number, account_holder_name, Long.parseLong(userId), 1L);
 
 
                             apiService.accountRegister(accountRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<AccountResponse>>() {
@@ -161,7 +161,7 @@ public class SignUp extends AppCompatActivity {
                                         System.out.println("Account Register Success: " + accountData.getAccountNumber());
                                         Toast.makeText(SignUp.this, "Account Register Success", Toast.LENGTH_SHORT).show();
                                         //make wallet register request
-                                        WalletRequest walletRequest = new WalletRequest(Long.parseLong(userId), 5L, new BigDecimal("0"));
+                                        WalletRequest walletRequest = new WalletRequest(Long.parseLong(userId), 1L, new BigDecimal("0"));
                                         System.out.println(new Gson().toJson(walletRequest));
 
                                         apiService.createWallet(walletRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<WalletResponse>>() {

@@ -101,7 +101,7 @@ public class Transfer extends AppCompatActivity {
                 TransactionRequest transactionRequest = new TransactionRequest(
                         Long.parseLong(prefs.getString("USER_ID", "0")),
                         Long.parseLong(targetUserId != null ? targetUserId : "0"),
-                        5L,
+                        1L,
                         amountDecimal,
                         description.isEmpty() ? "Transfer" : description
                 );

@@ -70,7 +70,7 @@ private boolean isHidden = true;
                 String amount = et_amount.getText().toString();
                 BigDecimal amountDecimal = new BigDecimal(amount);
                 ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                TransactionRequest transactionRequest = new TransactionRequest(Long.parseLong(prefs.getString("USER_ID", "0")), null, 5L, amountDecimal, "Withdraw");
+                TransactionRequest transactionRequest = new TransactionRequest(Long.parseLong(prefs.getString("USER_ID", "0")), null, 1L, amountDecimal, "Withdraw");
                 apiService.withdraw(transactionRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<TransactionResponse>>() {
 
                     @Override

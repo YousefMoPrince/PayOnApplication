@@ -68,7 +68,7 @@ public class Deposit extends AppCompatActivity {
                     Toast.makeText(Deposit.this, "Please enter a valid password", Toast.LENGTH_SHORT).show();
                 } else {
                     ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-                    TransactionRequest transactionRequest = new TransactionRequest(Long.parseLong(prefs.getString("USER_ID", "0")), null, 5L, amount, "Deposit");
+                    TransactionRequest transactionRequest = new TransactionRequest(Long.parseLong(prefs.getString("USER_ID", "0")), null, 1L, amount, "Deposit");
 
                     apiService.deposit(transactionRequest).enqueue(new retrofit2.Callback<GeneralApiResponse<TransactionResponse>>() {
                         @Override
